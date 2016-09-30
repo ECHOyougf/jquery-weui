@@ -114,7 +114,7 @@ gulp.task('html', function () {
     return gulp.src(["src/*.html", "src/*.html"])
         .pipe(minifyHTML({collapseWhitespace: true}))
         .pipe(changed(DEST))
-        .pipe(notify({message: '监视html'}))
+        //.pipe(notify({message: '监视html'}))
         .pipe(gulp.dest("./dist/"));
 });
 
@@ -149,4 +149,4 @@ gulp.task('watch', function () {
     gulp.watch('src/*.html');
     gulp.watch('src/css/*.css', ['copy']);
 });
-gulp.task("default", ['html','uglify', 'cssmin', 'copy', 'ejs','watch']);
+gulp.task("default", ['html','uglify', 'cssmin', 'copy', 'ejs']);
