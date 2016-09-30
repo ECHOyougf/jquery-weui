@@ -14,6 +14,7 @@ var gulp = require('gulp'),
     browserSync = require('browser-sync'),
     notify = require('gulp-notify'),
     changed = require('gulp-changed'),
+    spriter = require('gulp-css-spriter'),
     pkg = require("./package.json");
 var DEST = 'dist';
 var banner =
@@ -132,6 +133,22 @@ gulp.task('copy', function () {
         .pipe(gulp.dest('./dist/css/'));
 });
 
+/*雪碧图*/
+gulp.task('sprite', function () {
+    var spritTimeStamp=new Date().getTime();
+    gulp.src('src/css/**.css')//需要合并的图片地址
+        .pipe(spriter({
+            //  生成的spriter的位置
+            'spriteSheet': 'dist/images/sprite'+spritTimeStamp+'.png',
+            //  生成样式文件图片引用地址的路径
+            'pathToSpriteSheetFromCSS': '../images/sprite'+spritTimeStamp+'.png'
+        }))
+        .pipe(minifyCSS())
+        // 产出路径
+        .pipe(gulp.dest('dist/css/'));
+});
+
+
 gulp.task('server', function () {
     connect.server();
     browserSync({
@@ -139,7 +156,7 @@ gulp.task('server', function () {
             baseDir: 'src'
         }
     });
-    gulp.watch(['src/*.html','src/js/*.js','src/lib/*.css']).on('change', browserSync.reload);
+    gulp.watch(['src/*.html', 'src/js/*.js', 'src/lib/*.css']).on('change', browserSync.reload);
 
 });
 
@@ -149,4 +166,4 @@ gulp.task('watch', function () {
     gulp.watch('src/*.html');
     gulp.watch('src/css/*.css', ['copy']);
 });
-gulp.task("default", ['html','uglify', 'cssmin', 'copy', 'ejs']);
+gulp.task("default", ['html', 'uglify', 'sprite','cssmin', 'copy', 'ejs']);
